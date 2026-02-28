@@ -1,0 +1,23 @@
+{
+    "name": "medicare",
+    "version": "1.0.0",
+    "description": "Medicare Healthcare Management System",
+    "scripts": {
+        "dev": "concurrently \"npm run backend\" \"npm run client\"",
+        "client": "cd client && npm run dev",
+        "backend": "cd backend && npm start",
+        "build": "cd client && npm run build",
+        "install-all": "cd client && npm install && cd ../backend && npm install"
+    },
+    "keywords": [
+        "healthcare",
+        "react",
+        "nodejs",
+        "mongodb"
+    ],
+    "author": "",
+    "license": "MIT",
+    "devDependencies": {
+        "concurrently": "^8.2.2"
+    }
+}

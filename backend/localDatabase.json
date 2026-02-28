@@ -1,0 +1,145 @@
+{
+  "users": [
+    {
+      "_id": "patient_001",
+      "id": "patient_001",
+      "name": "John Patient",
+      "firstName": "John",
+      "lastName": "Patient",
+      "email": "patient@medicare.com",
+      "password": "$2b$10$Unxcj1A7d3ZnCykuZhI.Nusw/CLHgbKwLW82hTkM1bu39QtIBiP2.",
+      "role": "patient",
+      "createdAt": "2026-02-25T15:28:12.879Z"
+    },
+    {
+      "_id": "doctor_001",
+      "id": "doctor_001",
+      "name": "Dr. Sarah Johnson",
+      "firstName": "Dr. Sarah",
+      "lastName": "Johnson",
+      "email": "doctor@medicare.com",
+      "password": "$2b$10$QliPwK7VEzdWRrDX9.JpXev9mGXZGBxb70tv09goRBfWBVFRt5gYK",
+      "role": "doctor",
+      "specialization": "Cardiology",
+      "experience": "8 years",
+      "rating": 4.9,
+      "hospital": "Medicare General Hospital",
+      "createdAt": "2026-02-25T15:28:12.936Z"
+    }
+  ],
+  "appointments": [
+    {
+      "doctorId": "doctor_001",
+      "doctorName": "Dr. Sarah Johnson",
+      "specialty": "Cardiology",
+      "hospital": "Medicare General Hospital",
+      "date": "2026-02-28",
+      "time": "10:00 AM",
+      "reason": "Heart checkup",
+      "patientId": "patient_001",
+      "patientName": "John Patient",
+      "status": "cancelled",
+      "id": "1772033431013",
+      "createdAt": "2026-02-25T15:30:31.013Z"
+    },
+    {
+      "doctorId": "doctor_001",
+      "doctorName": "Dr. Sarah Johnson",
+      "specialty": "Cardiology",
+      "hospital": "Medicare General Hospital",
+      "date": "2026-03-01",
+      "time": "11:00 AM",
+      "reason": "Routine checkup",
+      "patientId": "patient_001",
+      "patientName": "John Patient",
+      "status": "cancelled",
+      "id": "1772033757688",
+      "createdAt": "2026-02-25T15:35:57.688Z"
+    },
+    {
+      "doctorId": "doctor_001",
+      "doctorName": "Dr. Sarah Johnson",
+      "specialty": "Cardiology",
+      "hospital": "Medicare General Hospital",
+      "date": "2026-03-05",
+      "time": "10:00 AM",
+      "reason": "Verification test appointment",
+      "patientId": "patient_001",
+      "patientName": "John Patient",
+      "status": "cancelled",
+      "id": "1772033895194",
+      "createdAt": "2026-02-25T15:38:15.194Z"
+    },
+    {
+      "doctorId": "doctor_001",
+      "doctorName": "Dr. Sarah Johnson",
+      "specialty": "Cardiology",
+      "hospital": "Medicare General Hospital",
+      "date": "2026-02-26",
+      "time": "10:00 AM",
+      "reason": "FEVER\n",
+      "patientId": "patient_001",
+      "patientName": "John Patient",
+      "status": "cancelled",
+      "id": "1772033979267",
+      "createdAt": "2026-02-25T15:39:39.267Z"
+    },
+    {
+      "doctorId": "doctor_001",
+      "doctorName": "Dr. Sarah Johnson",
+      "specialty": "Cardiology",
+      "hospital": "Medicare General Hospital",
+      "date": "2026-02-27",
+      "time": "2:00 PM",
+      "reason": "",
+      "patientId": "patient_001",
+      "patientName": "John Patient",
+      "status": "confirmed",
+      "id": "1772093989685",
+      "createdAt": "2026-02-26T08:19:49.685Z"
+    }
+  ],
+  "prescriptions": [
+    {
+      "patientId": "patient_001",
+      "patientName": "John Patient",
+      "doctorId": "doctor_001",
+      "doctorName": "Dr. Sarah Johnson",
+      "medicines": [
+        {
+          "name": "Aspirin",
+          "dosage": "20mg",
+          "frequency": "Twice daily",
+          "duration": "30days",
+          "instructions": "Take after meal"
+        }
+      ],
+      "notes": "",
+      "status": "completed",
+      "prescribedDate": "2026-02-25T15:40:51.114Z",
+      "id": "1772034051115",
+      "createdAt": "2026-02-25T15:40:51.115Z"
+    },
+    {
+      "patientId": "patient_001",
+      "patientName": "John Patient",
+      "doctorId": "doctor_001",
+      "doctorName": "Dr. Sarah Johnson",
+      "medicines": [
+        {
+          "name": "Ibuprofen",
+          "dosage": "30mg",
+          "frequency": "As needed",
+          "duration": "30 days",
+          "instructions": "Take after meals"
+        }
+      ],
+      "notes": "",
+      "status": "completed",
+      "prescribedDate": "2026-02-25T16:05:05.969Z",
+      "id": "1772035505970",
+      "createdAt": "2026-02-25T16:05:05.970Z"
+    }
+  ],
+  "records": []
+}

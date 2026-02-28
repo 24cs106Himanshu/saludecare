@@ -1,0 +1,452 @@
+/* ── TopBar Base ── */
+.topbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 24px;
+    height: 64px;
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.topbar-menu-btn {
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    display: none;
+    transition: all 0.2s;
+}
+
+.topbar-menu-btn:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+.topbar-title h1 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e293b;
+    letter-spacing: -0.01em;
+}
+
+/* ── Search ── */
+.topbar-search {
+    flex: 1;
+    max-width: 380px;
+    position: relative;
+    margin: 0 auto;
+}
+
+.topbar-search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    pointer-events: none;
+}
+
+.topbar-search-input {
+    width: 100%;
+    padding: 9px 16px 9px 38px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: #1e293b;
+    background: #f8fafc;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.topbar-search-input:focus {
+    border-color: #93c5fd;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.topbar-search-input::placeholder {
+    color: #94a3b8;
+}
+
+/* ── Right section ── */
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+}
+
+/* ── Icon button (bell) ── */
+.topbar-icon-btn {
+    position: relative;
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    padding: 9px;
+    border-radius: 10px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.topbar-icon-btn:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+.topbar-badge-count {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    min-width: 16px;
+    height: 16px;
+    background: #ef4444;
+    border-radius: 99px;
+    border: 2px solid white;
+    font-size: 0.6rem;
+    font-weight: 800;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3px;
+}
+
+/* ── Profile button ── */
+.topbar-profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 5px 10px 5px 5px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.topbar-profile-btn:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.topbar-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: white;
+    flex-shrink: 0;
+}
+
+.topbar-profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.topbar-profile-name {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.2;
+}
+
+.topbar-profile-role {
+    font-size: 0.68rem;
+    color: #94a3b8;
+    text-transform: capitalize;
+    line-height: 1.2;
+}
+
+.topbar-chevron {
+    color: #94a3b8;
+    transition: transform 0.2s;
+}
+
+.topbar-chevron.rotated {
+    transform: rotate(180deg);
+}
+
+/* ── Dropdown wrapper ── */
+.topbar-dropdown-wrapper {
+    position: relative;
+}
+
+/* ── Dropdown base ── */
+.topbar-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+    z-index: 200;
+    animation: dropdownIn 0.15s ease;
+    overflow: hidden;
+}
+
+@keyframes dropdownIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ── Dropdown header ── */
+.dropdown-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    gap: 10px;
+}
+
+.dropdown-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.dropdown-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #eff6ff;
+    border: none;
+    color: #3b82f6;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.dropdown-action-btn:hover {
+    background: #dbeafe;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: #f1f5f9;
+    margin: 4px 0;
+}
+
+/* ── Dropdown menu items ── */
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 16px;
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: #374151;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s;
+}
+
+.dropdown-item:hover {
+    background: #f8fafc;
+    color: #1e293b;
+}
+
+.dropdown-item.danger {
+    color: #ef4444;
+}
+
+.dropdown-item.danger:hover {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+/* ── Notifications dropdown ── */
+.notif-dropdown {
+    width: 340px;
+}
+
+.notif-list {
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.notif-empty {
+    padding: 24px;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.85rem;
+}
+
+.notif-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f8fafc;
+    transition: background 0.15s;
+    cursor: default;
+}
+
+.notif-item:last-child {
+    border-bottom: none;
+}
+
+.notif-item.unread {
+    background: #f0f9ff;
+}
+
+.notif-item:hover {
+    background: #f8fafc;
+}
+
+.notif-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #94a3b8;
+    flex-shrink: 0;
+    margin-top: 5px;
+}
+
+.notif-item.unread .notif-dot {
+    background: #3b82f6;
+}
+
+.notif-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.notif-item-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 2px;
+}
+
+.notif-item-text {
+    font-size: 0.75rem;
+    color: #64748b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.notif-item-time {
+    font-size: 0.68rem;
+    color: #94a3b8;
+    margin-top: 3px;
+}
+
+.notif-dismiss {
+    background: none;
+    border: none;
+    color: #cbd5e1;
+    cursor: pointer;
+    padding: 2px;
+    border-radius: 4px;
+    transition: color 0.15s;
+    flex-shrink: 0;
+}
+
+.notif-dismiss:hover {
+    color: #ef4444;
+}
+
+/* ── Profile dropdown ── */
+.profile-dropdown {
+    width: 240px;
+}
+
+.profile-header-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: white;
+    flex-shrink: 0;
+}
+
+.profile-header-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.profile-header-email {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 160px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .topbar-menu-btn {
+        display: flex;
+    }
+
+    .topbar-search {
+        display: none;
+    }
+
+    .topbar-profile-info {
+        display: none;
+    }
+
+    .topbar-chevron {
+        display: none;
+    }
+
+    .topbar-profile-btn {
+        border: none;
+        padding: 4px;
+    }
+
+    .notif-dropdown {
+        width: 300px;
+        right: -60px;
+    }
+
+    .profile-dropdown {
+        right: 0;
+    }
+}
