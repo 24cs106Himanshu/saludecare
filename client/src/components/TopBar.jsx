@@ -227,7 +227,7 @@ export default function TopBar({ onMenuClick, title }) {
                             <button className="dropdown-item" onClick={goToProfile}>
                                 <User size={15} /> My Dashboard
                             </button>
-                            <button className="dropdown-item" onClick={() => setShowProfile(false)}>
+                            <button className="dropdown-item" onClick={() => { setShowProfile(false); navigate(`/${user?.role}/settings`); }}>
                                 <Settings size={15} /> Settings
                             </button>
                             <div className="dropdown-divider" />

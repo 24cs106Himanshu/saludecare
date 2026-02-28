@@ -1,18 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
     Activity, Shield, Calendar, FileText, MessageSquare, Star,
     ChevronRight, Heart, Users, Award, Clock, ArrowRight,
     Stethoscope, Pill, Brain, Phone, Mail, MapPin, CheckCircle,
-    Menu, X
+    Menu, X, Zap, TrendingUp
 } from 'lucide-react';
 import './HomePage.css';
 
 const STATS = [
-    { value: '50K+', label: 'Patients Served', icon: Users },
-    { value: '200+', label: 'Expert Doctors', icon: Stethoscope },
-    { value: '98%', label: 'Satisfaction Rate', icon: Star },
-    { value: '24/7', label: 'AI Support', icon: Brain },
+    { value: 50000, display: '50K+', label: 'Patients Served', icon: Users },
+    { value: 200, display: '200+', label: 'Expert Doctors', icon: Stethoscope },
+    { value: 98, display: '98%', label: 'Satisfaction Rate', icon: Star },
+    { value: 24, display: '24/7', label: 'AI Support', icon: Brain },
 ];
 
 const FEATURES = [
@@ -88,9 +88,77 @@ const TESTIMONIALS = [
     },
 ];
 
+const MARQUEE_ITEMS = [
+    { icon: CheckCircle, text: 'HIPAA Compliant', color: '#10b981' },
+    { icon: Shield, text: 'SSL Encrypted', color: '#3b82f6' },
+    { icon: Award, text: 'ISO Certified', color: '#8b5cf6' },
+    { icon: Star, text: '4.9 / 5 Rating', color: '#f59e0b' },
+    { icon: Users, text: '50,000+ Patients', color: '#0d9488' },
+    { icon: Zap, text: 'AI Powered', color: '#ef4444' },
+    { icon: TrendingUp, text: '98% Satisfaction', color: '#3b82f6' },
+    { icon: Heart, text: 'Trusted Care', color: '#ef4444' },
+];
+
+// Hook: count up animation
+function useCountUp(target, duration = 1800, started = false) {
+    const [count, setCount] = useState(0);
+    useEffect(() => {
+        if (!started) return;
+        let startTime = null;
+        const step = (timestamp) => {
+            if (!startTime) startTime = timestamp;
+            const progress = Math.min((timestamp - startTime) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            setCount(Math.floor(eased * target));
+            if (progress < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+    }, [started, target, duration]);
+    return count;
+}
+
+// Hook: IntersectionObserver trigger
+function useInView(threshold = 0.15) {
+    const ref = useRef(null);
+    const [inView, setInView] = useState(false);
+    useEffect(() => {
+        const obs = new IntersectionObserver(
+            ([entry]) => { if (entry.isIntersecting) { setInView(true); obs.disconnect(); } },
+            { threshold }
+        );
+        if (ref.current) obs.observe(ref.current);
+        return () => obs.disconnect();
+    }, [threshold]);
+    return [ref, inView];
+}
+
+function StatItem({ stat, started }) {
+    const count = useCountUp(stat.value, 1600, started);
+    const display = stat.display.includes('%')
+        ? `${count}%`
+        : stat.display.includes('+')
+            ? `${count.toLocaleString()}+`
+            : stat.display;
+    const Icon = stat.icon;
+    return (
+        <div className="stat-item">
+            <div className="stat-icon"><Icon size={22} color="#2563eb" /></div>
+            <div className="stat-value">{display}</div>
+            <div className="stat-label">{stat.label}</div>
+        </div>
+    );
+}
+
 export default function HomePage() {
     const [navOpen, setNavOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+
+    // Section refs for scroll-reveal
+    const [statsRef, statsInView] = useInView(0.2);
+    const [featuresRef, featuresInView] = useInView(0.1);
+    const [doctorsRef, doctorsInView] = useInView(0.1);
+    const [testimonialsRef, testimonialsInView] = useInView(0.1);
+    const [ctaRef, ctaInView] = useInView(0.2);
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -129,122 +197,150 @@ export default function HomePage() {
             </nav>
 
             {/* Hero Section */}
-            <section className="home-hero">
-                <div className="home-hero-bg">
-                    <div className="hero-orb hero-orb-1" />
-                    <div className="hero-orb hero-orb-2" />
-                    <div className="hero-orb hero-orb-3" />
-                    <div className="hero-grid" />
-                </div>
-
-                <div className="home-hero-content">
-                    <div className="hero-badge animate-fade-in">
-                        <span className="status-dot online" />
-                        <span>Trusted by 50,000+ patients worldwide</span>
+            <section className="home-hero-wrapper">
+                <section className="home-hero">
+                    <div className="home-hero-bg">
+                        <div className="hero-orb hero-orb-1" />
+                        <div className="hero-orb hero-orb-2" />
+                        <div className="hero-orb hero-orb-3" />
+                        <div className="hero-grid" />
                     </div>
 
-                    <h1 className="hero-title animate-fade-in delay-100">
-                        Your Health,
-                        <br />
-                        <span className="gradient-text-hero">Reimagined.</span>
-                    </h1>
-
-                    <p className="hero-subtitle animate-fade-in delay-200">
-                        Medicare connects you with top doctors, manages your prescriptions,
-                        and provides AI-powered health guidance — all in one seamless platform.
-                    </p>
-
-                    <div className="hero-actions animate-fade-in delay-300">
-                        <Link to="/register" className="btn btn-primary btn-lg">
-                            Start Your Journey
-                            <ArrowRight size={18} />
-                        </Link>
-                        <Link to="/login" className="btn hero-btn-outline btn-lg">
-                            Sign In
-                        </Link>
+                    {/* ECG Line */}
+                    <div className="hero-ecg-line">
+                        <svg viewBox="0 0 1200 60" preserveAspectRatio="none" className="ecg-svg">
+                            <polyline
+                                className="ecg-path"
+                                points="0,30 100,30 130,30 145,5 155,55 165,5 175,55 185,30 200,30 300,30 330,30 345,5 355,55 365,5 375,55 385,30 400,30 500,30 530,30 545,5 555,55 565,5 575,55 585,30 600,30 700,30 730,30 745,5 755,55 765,5 775,55 785,30 800,30 900,30 930,30 945,5 955,55 965,5 975,55 985,30 1000,30 1100,30 1200,30"
+                            />
+                        </svg>
                     </div>
 
-                    <div className="hero-trust animate-fade-in delay-400">
-                        <div className="hero-trust-avatars">
-                            {['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b'].map((c, i) => (
-                                <div key={i} className="hero-trust-avatar" style={{ background: c, zIndex: 4 - i }}>
-                                    {['A', 'B', 'C', 'D'][i]}
-                                </div>
-                            ))}
+                    <div className="home-hero-content">
+                        <div className="hero-badge">
+                            <span className="status-dot online" />
+                            <span>Trusted by 50,000+ patients worldwide</span>
                         </div>
-                        <div className="hero-trust-text">
-                            <div className="hero-trust-stars">
-                                {[...Array(5)].map((_, i) => <Star key={i} size={12} fill="#f59e0b" color="#f59e0b" />)}
-                            </div>
-                            <span>4.9/5 from 12,000+ reviews</span>
-                        </div>
-                    </div>
-                </div>
 
-                {/* Hero Card */}
-                <div className="hero-card-wrapper animate-fade-in-right delay-200">
-                    <div className="hero-card">
-                        <div className="hero-card-header">
-                            <div className="hero-card-avatar" style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)' }}>S</div>
-                            <div>
-                                <div className="hero-card-name">Dr. Sarah Mitchell</div>
-                                <div className="hero-card-spec">Cardiologist • ⭐ 4.9</div>
-                            </div>
-                            <span className="badge badge-success" style={{ marginLeft: 'auto' }}>Available</span>
+                        <h1 className="hero-title">
+                            Your Health,
+                            <br />
+                            <span className="gradient-text-hero">Reimagined.</span>
+                        </h1>
+
+                        <p className="hero-subtitle">
+                            Medicare connects you with top doctors, manages your prescriptions,
+                            and provides AI-powered health guidance — all in one seamless platform.
+                        </p>
+
+                        <div className="hero-actions">
+                            <Link to="/register" className="btn btn-primary btn-lg hero-cta-btn">
+                                Start Your Journey
+                                <ArrowRight size={18} />
+                            </Link>
+                            <Link to="/login" className="btn hero-btn-outline btn-lg">
+                                Sign In
+                            </Link>
                         </div>
-                        <div className="hero-card-slots">
-                            <div className="hero-card-slots-title">Today's Available Slots</div>
-                            <div className="hero-card-slot-grid">
-                                {['9:00 AM', '10:30 AM', '2:00 PM', '4:30 PM'].map((t, i) => (
-                                    <div key={i} className={`hero-slot ${i === 1 ? 'selected' : ''}`}>{t}</div>
+
+                        <div className="hero-trust">
+                            <div className="hero-trust-avatars">
+                                {['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b'].map((c, i) => (
+                                    <div key={i} className="hero-trust-avatar" style={{ background: c, zIndex: 4 - i }}>
+                                        {['A', 'B', 'C', 'D'][i]}
+                                    </div>
                                 ))}
                             </div>
+                            <div className="hero-trust-text">
+                                <div className="hero-trust-stars">
+                                    {[...Array(5)].map((_, i) => <Star key={i} size={12} fill="#f59e0b" color="#f59e0b" />)}
+                                </div>
+                                <span>4.9/5 from 12,000+ reviews</span>
+                            </div>
                         </div>
-                        <button className="btn btn-primary btn-full" style={{ marginTop: '12px' }}>
-                            <Calendar size={16} />
-                            Book Appointment
-                        </button>
                     </div>
 
-                    {/* Floating cards */}
-                    <div className="hero-float-card hero-float-1">
-                        <CheckCircle size={16} color="#10b981" />
-                        <span>Appointment Confirmed!</span>
-                    </div>
-                    <div className="hero-float-card hero-float-2">
-                        <Heart size={16} color="#ef4444" className="animate-heartbeat" />
-                        <div>
-                            <div style={{ fontSize: '0.7rem', color: '#64748b' }}>Heart Rate</div>
-                            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#1e293b' }}>72 BPM</div>
+                    {/* Hero Card */}
+                    <div className="hero-card-wrapper">
+                        <div className="hero-card-glow" />
+                        <div className="hero-card">
+                            <div className="hero-card-header">
+                                <div className="hero-card-avatar" style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)' }}>S</div>
+                                <div>
+                                    <div className="hero-card-name">Dr. Sarah Mitchell</div>
+                                    <div className="hero-card-spec">Cardiologist • ⭐ 4.9</div>
+                                </div>
+                                <span className="badge badge-success" style={{ marginLeft: 'auto' }}>Available</span>
+                            </div>
+                            <div className="hero-card-slots">
+                                <div className="hero-card-slots-title">Today's Available Slots</div>
+                                <div className="hero-card-slot-grid">
+                                    {['9:00 AM', '10:30 AM', '2:00 PM', '4:30 PM'].map((t, i) => (
+                                        <div key={i} className={`hero-slot ${i === 1 ? 'selected' : ''}`}>{t}</div>
+                                    ))}
+                                </div>
+                            </div>
+                            <button className="btn btn-primary btn-full" style={{ marginTop: '12px' }}>
+                                <Calendar size={16} />
+                                Book Appointment
+                            </button>
+                        </div>
+
+                        {/* Floating cards */}
+                        <div className="hero-float-card hero-float-1">
+                            <CheckCircle size={16} color="#10b981" />
+                            <span>Appointment Confirmed!</span>
+                        </div>
+                        <div className="hero-float-card hero-float-2">
+                            <Heart size={16} color="#ef4444" className="animate-heartbeat" />
+                            <div>
+                                <div style={{ fontSize: '0.7rem', color: '#64748b' }}>Heart Rate</div>
+                                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#1e293b' }}>72 BPM</div>
+                            </div>
+                        </div>
+
+                        {/* New: AI assist float */}
+                        <div className="hero-float-card hero-float-3">
+                            <Brain size={16} color="#8b5cf6" />
+                            <div>
+                                <div style={{ fontSize: '0.7rem', color: '#64748b' }}>AI Insight</div>
+                                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1e293b' }}>All Vitals Normal</div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </section>
             </section>
 
+            {/* Trust Marquee Strip */}
+            <div className="trust-marquee-strip">
+                <div className="trust-marquee-track">
+                    {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => {
+                        const Icon = item.icon;
+                        return (
+                            <div key={i} className="trust-marquee-item">
+                                <Icon size={14} color={item.color} />
+                                <span>{item.text}</span>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+
             {/* Stats */}
-            <section className="home-stats">
+            <section className="home-stats" ref={statsRef}>
                 <div className="home-container">
-                    <div className="stats-grid">
-                        {STATS.map((stat, i) => {
-                            const Icon = stat.icon;
-                            return (
-                                <div key={i} className="stat-item animate-fade-in" style={{ animationDelay: `${i * 100}ms` }}>
-                                    <div className="stat-icon">
-                                        <Icon size={22} color="#2563eb" />
-                                    </div>
-                                    <div className="stat-value">{stat.value}</div>
-                                    <div className="stat-label">{stat.label}</div>
-                                </div>
-                            );
-                        })}
+                    <div className={`stats-grid ${statsInView ? 'revealed' : ''}`}>
+                        {STATS.map((stat, i) => (
+                            <StatItem key={i} stat={stat} started={statsInView} />
+                        ))}
                     </div>
                 </div>
             </section>
 
             {/* Features */}
-            <section className="home-features" id="features">
+            <section className="home-features" id="features" ref={featuresRef}>
                 <div className="home-container">
-                    <div className="section-header">
+                    <div className={`section-header reveal-element ${featuresInView ? 'revealed' : ''}`}>
                         <div className="section-badge">Features</div>
                         <h2 className="section-title">Everything you need for <span className="gradient-text">better health</span></h2>
                         <p className="section-subtitle">A comprehensive platform designed to make healthcare accessible, efficient, and personalized.</p>
@@ -254,7 +350,12 @@ export default function HomePage() {
                         {FEATURES.map((f, i) => {
                             const Icon = f.icon;
                             return (
-                                <div key={i} className="feature-card card animate-fade-in" style={{ animationDelay: `${i * 80}ms` }}>
+                                <div
+                                    key={i}
+                                    className={`feature-card card reveal-element ${featuresInView ? 'revealed' : ''}`}
+                                    style={{ transitionDelay: `${i * 80}ms` }}
+                                >
+                                    <div className="feature-card-accent" style={{ background: f.bg }} />
                                     <div className="feature-icon" style={{ background: f.bg, color: f.color }}>
                                         <Icon size={22} />
                                     </div>
@@ -271,9 +372,9 @@ export default function HomePage() {
             </section>
 
             {/* Doctors */}
-            <section className="home-doctors" id="doctors">
+            <section className="home-doctors" id="doctors" ref={doctorsRef}>
                 <div className="home-container">
-                    <div className="section-header">
+                    <div className={`section-header reveal-element ${doctorsInView ? 'revealed' : ''}`}>
                         <div className="section-badge">Our Team</div>
                         <h2 className="section-title">Meet our <span className="gradient-text">expert doctors</span></h2>
                         <p className="section-subtitle">Board-certified specialists committed to providing exceptional care.</p>
@@ -281,7 +382,12 @@ export default function HomePage() {
 
                     <div className="doctors-grid">
                         {DOCTORS.map((doc, i) => (
-                            <div key={i} className="doctor-card card animate-fade-in" style={{ animationDelay: `${i * 100}ms` }}>
+                            <div
+                                key={i}
+                                className={`doctor-card card reveal-element ${doctorsInView ? 'revealed' : ''}`}
+                                style={{ transitionDelay: `${i * 100}ms` }}
+                            >
+                                <div className="doctor-card-top-bar" style={{ background: `linear-gradient(135deg, ${doc.color}, ${doc.color}88)` }} />
                                 <div className="doctor-avatar" style={{ background: `linear-gradient(135deg, ${doc.color}, ${doc.color}88)` }}>
                                     {doc.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                                 </div>
@@ -311,22 +417,27 @@ export default function HomePage() {
             </section>
 
             {/* Testimonials */}
-            <section className="home-testimonials" id="testimonials">
+            <section className="home-testimonials" id="testimonials" ref={testimonialsRef}>
                 <div className="home-container">
-                    <div className="section-header">
+                    <div className={`section-header reveal-element ${testimonialsInView ? 'revealed' : ''}`}>
                         <div className="section-badge">Reviews</div>
                         <h2 className="section-title">What our <span className="gradient-text">patients say</span></h2>
                     </div>
 
                     <div className="testimonials-grid">
                         {TESTIMONIALS.map((t, i) => (
-                            <div key={i} className="testimonial-card card animate-fade-in" style={{ animationDelay: `${i * 100}ms` }}>
+                            <div
+                                key={i}
+                                className={`testimonial-card card reveal-element ${testimonialsInView ? 'revealed' : ''}`}
+                                style={{ transitionDelay: `${i * 100}ms` }}
+                            >
+                                <div className="testimonial-quote">"</div>
                                 <div className="testimonial-stars">
                                     {[...Array(t.rating)].map((_, j) => (
                                         <Star key={j} size={14} fill="#f59e0b" color="#f59e0b" />
                                     ))}
                                 </div>
-                                <p className="testimonial-text">"{t.text}"</p>
+                                <p className="testimonial-text">{t.text}</p>
                                 <div className="testimonial-author">
                                     <div className="testimonial-avatar" style={{ background: `hsl(${i * 80 + 200}, 70%, 50%)` }}>
                                         {t.name[0]}
@@ -343,11 +454,16 @@ export default function HomePage() {
             </section>
 
             {/* CTA */}
-            <section className="home-cta">
+            <section className="home-cta" ref={ctaRef}>
                 <div className="home-container">
-                    <div className="cta-card">
+                    <div className={`cta-card reveal-element ${ctaInView ? 'revealed' : ''}`}>
                         <div className="cta-orb cta-orb-1" />
                         <div className="cta-orb cta-orb-2" />
+                        <div className="cta-particles">
+                            {[...Array(6)].map((_, i) => (
+                                <div key={i} className="cta-particle" style={{ animationDelay: `${i * 0.4}s`, left: `${10 + i * 15}%` }} />
+                            ))}
+                        </div>
                         <h2 className="cta-title">Ready to take control of your health?</h2>
                         <p className="cta-subtitle">Join thousands of patients who trust Medicare for their healthcare needs.</p>
                         <div className="cta-actions">
@@ -358,6 +474,10 @@ export default function HomePage() {
                             <Link to="/login" className="btn cta-btn-outline btn-lg">
                                 Sign In
                             </Link>
+                        </div>
+                        <div className="cta-live-indicator">
+                            <span className="status-dot online" />
+                            <span>247 patients joined this week</span>
                         </div>
                     </div>
                 </div>

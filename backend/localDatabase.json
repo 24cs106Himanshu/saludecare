@@ -25,6 +25,28 @@
       "rating": 4.9,
       "hospital": "Medicare General Hospital",
       "createdAt": "2026-02-25T15:28:12.936Z"
+    },
+    {
+      "_id": "user_1772279111236",
+      "id": "user_1772279111236",
+      "name": "Himanshu Varotariya",
+      "firstName": "Himanshu",
+      "lastName": "Varotariya",
+      "email": "doctor@test.com",
+      "password": "$2b$10$NtVDCcfAYhjzjFpwklYEb.MtmuyZ/woHZTwF8vK36qbwi3jO9nVTy",
+      "role": "doctor",
+      "createdAt": "2026-02-28T11:45:11.237Z"
+    },
+    {
+      "_id": "user_1772279805530",
+      "id": "user_1772279805530",
+      "name": "Himanshu Varotariya",
+      "firstName": "Himanshu",
+      "lastName": "Varotariya",
+      "email": "himanshu@medicare.com",
+      "password": "$2b$10$xKPk1IGMzeDH2YJqJyogsOwIHXCs5zt5Yo.tkDnTbAd1ZabCjelM6",
+      "role": "doctor",
+      "createdAt": "2026-02-28T11:56:45.531Z"
     }
   ],
   "appointments": [
@@ -94,9 +116,23 @@
       "reason": "",
       "patientId": "patient_001",
       "patientName": "John Patient",
-      "status": "confirmed",
+      "status": "cancelled",
       "id": "1772093989685",
       "createdAt": "2026-02-26T08:19:49.685Z"
+    },
+    {
+      "doctorId": "user_1772279111236",
+      "doctorName": "Himanshu Varotariya",
+      "specialty": "General Practice",
+      "hospital": "Medicare General Hospital",
+      "date": "2026-02-28",
+      "time": "10:00 AM",
+      "reason": "",
+      "patientId": "patient_001",
+      "patientName": "John Patient",
+      "status": "confirmed",
+      "id": "1772279186668",
+      "createdAt": "2026-02-28T11:46:26.668Z"
     }
   ],
   "prescriptions": [

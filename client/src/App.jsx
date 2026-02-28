@@ -15,6 +15,7 @@ import MedicalRecordsPage from './pages/patient/MedicalRecordsPage';
 import DoctorAppointments from './pages/doctor/DoctorAppointments';
 import DoctorPatients from './pages/doctor/DoctorPatients';
 import DoctorPrescriptions from './pages/doctor/DoctorPrescriptions';
+import SettingsPage from './pages/shared/SettingsPage';
 
 function ProtectedRoute({ children, allowedRoles }) {
   const { user } = useAuth();
@@ -56,6 +57,12 @@ function AppRoutes() {
         </ProtectedRoute>
       } />
 
+      <Route path="/patient/settings" element={
+        <ProtectedRoute allowedRoles={['patient']}>
+          <SettingsPage />
+        </ProtectedRoute>
+      } />
+
       {/* Doctor Routes */}
       <Route path="/doctor" element={
         <ProtectedRoute allowedRoles={['doctor']}>
@@ -75,6 +82,11 @@ function AppRoutes() {
       <Route path="/doctor/prescriptions" element={
         <ProtectedRoute allowedRoles={['doctor']}>
           <DoctorPrescriptions />
+        </ProtectedRoute>
+      } />
+      <Route path="/doctor/settings" element={
+        <ProtectedRoute allowedRoles={['doctor']}>
+          <SettingsPage />
         </ProtectedRoute>
       } />
 

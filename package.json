@@ -5,7 +5,7 @@
     "scripts": {
         "dev": "concurrently \"npm run backend\" \"npm run client\"",
         "client": "cd client && npm run dev",
-        "backend": "cd backend && npm start",
+        "backend": "cd backend && npm run dev",
         "build": "cd client && npm run build",
         "install-all": "cd client && npm install && cd ../backend && npm install"
     },

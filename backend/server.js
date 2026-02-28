@@ -1,15 +1,53 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const { seedDefaultAccounts } = require("./localDb");
+const connectDB = require("./db");
+const User = require("./models/User");
+const bcrypt = require("bcryptjs");
 
 dotenv.config();
 
-// Seed default accounts on startup
-seedDefaultAccounts().then(() => {
-  console.log("🏥 Medicare Local Database Ready");
-  console.log("📧 Patient Login: patient@medicare.com / patient123");
-  console.log("👨‍⚕️ Doctor Login:  doctor@medicare.com / doctor123");
+// Connect to MongoDB
+const mongoose = require("mongoose");
+connectDB().then(async () => {
+  // Seed default accounts if connected
+  if (process.env.MONGO_URI && mongoose.connection.readyState === 1) {
+    try {
+      const patientCount = await User.countDocuments({ email: "patient@medicare.com" });
+      if (patientCount === 0) {
+        const hashedPwd = await bcrypt.hash("patient123", 10);
+        await User.create({
+          name: "John Patient",
+          firstName: "John",
+          lastName: "Patient",
+          email: "patient@medicare.com",
+          password: hashedPwd,
+          role: "patient",
+        });
+        console.log("✅ Seeded patient account: patient@medicare.com / patient123");
+      }
+
+      const doctorCount = await User.countDocuments({ email: "doctor@medicare.com" });
+      if (doctorCount === 0) {
+        const hashedPwd = await bcrypt.hash("doctor123", 10);
+        await User.create({
+          name: "Dr. Sarah Johnson",
+          firstName: "Dr. Sarah",
+          lastName: "Johnson",
+          email: "doctor@medicare.com",
+          password: hashedPwd,
+          role: "doctor",
+          specialization: "Cardiology",
+          experience: "8 years",
+          rating: 4.9,
+          hospital: "Medicare General Hospital",
+        });
+        console.log("✅ Seeded doctor account: doctor@medicare.com / doctor123");
+      }
+    } catch (err) {
+      console.error("Error seeding generic accounts:", err.message);
+    }
+  }
 });
 
 const app = express();
@@ -33,7 +71,7 @@ app.use(express.json());
 
 app.get("/", (req, res) => {
   res.json({
-    message: "Hospital Management Backend is running (Local DB Mode)",
+    message: "Hospital Management Backend is running",
     status: "OK",
     timestamp: new Date().toISOString(),
   });

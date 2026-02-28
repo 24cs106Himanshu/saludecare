@@ -6,21 +6,7 @@ import { recordsAPI } from '../../services/api';
 import './MedicalRecordsPage.css';
 import '../patient/AppointmentPage.css';
 
-// Sample data shown when there are no real records yet
-const SAMPLE_RECORDS = [
-    {
-        id: 'sample-1', type: 'Lab Report', title: 'Complete Blood Count (CBC)', date: 'Sample',
-        doctor: 'Dr. Sarah Mitchell', status: 'normal', category: 'blood', isSample: true,
-        results: [
-            { test: 'Hemoglobin', value: '14.2 g/dL', range: '13.5–17.5', status: 'normal' },
-            { test: 'WBC Count', value: '7,200 /μL', range: '4,500–11,000', status: 'normal' },
-        ],
-    },
-];
-
-const SAMPLE_HISTORY = [
-    { date: 'Sample', condition: 'No History Yet', doctor: '—', status: 'resolved' },
-];
+// No fallback sample data
 
 export default function MedicalRecordsPage() {
     const [search, setSearch] = useState('');
@@ -36,7 +22,7 @@ export default function MedicalRecordsPage() {
             .then(res => {
                 const data = res.data;
                 if (data.length === 0) {
-                    setRecords(SAMPLE_RECORDS);
+                    setRecords([]);
                 } else {
                     const normalized = data.map(r => ({
                         ...r,
@@ -56,8 +42,8 @@ export default function MedicalRecordsPage() {
                 }
             })
             .catch(() => {
-                setRecords(SAMPLE_RECORDS);
-                toast.error('Could not load records. Showing sample data.');
+                setRecords([]);
+                toast.error('Could not load records.');
             })
             .finally(() => setLoading(false));
     };
@@ -200,19 +186,11 @@ export default function MedicalRecordsPage() {
                 {activeTab === 'history' && (
                     <div className="diagnosis-history animate-fade-in">
                         <div className="timeline">
-                            {SAMPLE_HISTORY.map((item, i) => (
-                                <div key={i} className="timeline-item">
-                                    <div className="timeline-dot" style={{ background: item.status === 'ongoing' ? '#ef4444' : item.status === 'managed' ? '#f59e0b' : '#10b981' }} />
-                                    <div className="timeline-content">
-                                        <div className="timeline-date">{item.date}</div>
-                                        <div className="timeline-condition">{item.condition}</div>
-                                        <div className="timeline-doctor">{item.doctor}</div>
-                                        <span className={`badge ${item.status === 'ongoing' ? 'badge-error' : item.status === 'managed' ? 'badge-warning' : 'badge-success'}`}>
-                                            {item.status}
-                                        </span>
-                                    </div>
-                                </div>
-                            ))}
+                            <div style={{ padding: '40px', textAlign: 'center', color: '#94a3b8' }}>
+                                <Activity size={48} color="#cbd5e1" style={{ margin: '0 auto 16px' }} />
+                                <h3 style={{ color: '#475569', marginBottom: 8 }}>No Diagnosis History</h3>
+                                <p>Your diagnostic timeline will appear here.</p>
+                            </div>
                         </div>
                     </div>
                 )}

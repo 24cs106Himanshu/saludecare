@@ -1,53 +1,50 @@
 const express = require("express");
 const router = express.Router();
 const authMiddleware = require("./authMiddleware");
-const { db } = require("./localDb");
+const User = require("./models/User");
+const Appointment = require("./models/Appointment");
 
-// Get all doctors (from local DB)
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const allUsers = db.getAllUsers();
-    const doctors = allUsers
-      .filter((u) => u.role === "doctor")
-      .map((doc) => ({
-        id: doc._id,
-        _id: doc._id,
-        firstName: doc.firstName || doc.name.split(" ")[0],
-        lastName: doc.lastName || doc.name.split(" ").slice(1).join(" "),
-        name: doc.name,
-        email: doc.email,
-        specialization: doc.specialization || "General Practice",
-        experience: doc.experience || "5 years",
-        consultationFee: doc.consultationFee || 150,
-        rating: doc.rating || 4.9,
-        hospital: doc.hospital || "Medicare General Hospital",
-        available: true,
-      }));
+    const doctorsDb = await User.find({ role: "doctor" });
+    const doctors = doctorsDb.map((doc) => ({
+      id: doc._id.toString(),
+      _id: doc._id.toString(),
+      firstName: doc.firstName || doc.name.split(" ")[0],
+      lastName: doc.lastName || doc.name.split(" ").slice(1).join(" "),
+      name: doc.name,
+      email: doc.email,
+      specialization: doc.specialization,
+      experience: doc.experience,
+      consultationFee: doc.consultationFee,
+      rating: doc.rating,
+      hospital: doc.hospital,
+      available: true,
+    }));
     res.json(doctors);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-// Get doctor by ID
-router.get("/:id", (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
-    const user = db.findUserById(req.params.id);
-    if (!user || user.role !== "doctor") {
+    const user = await User.findOne({ _id: req.params.id, role: "doctor" });
+    if (!user) {
       return res.status(404).json({ message: "Doctor not found" });
     }
     res.json({
-      id: user._id,
-      _id: user._id,
+      id: user._id.toString(),
+      _id: user._id.toString(),
       firstName: user.firstName,
       lastName: user.lastName,
       name: user.name,
       email: user.email,
-      specialization: user.specialization || "General Practice",
-      experience: user.experience || "5 years",
-      consultationFee: user.consultationFee || 150,
-      rating: user.rating || 4.9,
-      hospital: user.hospital || "Medicare General Hospital",
+      specialization: user.specialization,
+      experience: user.experience,
+      consultationFee: user.consultationFee,
+      rating: user.rating,
+      hospital: user.hospital,
       available: true,
     });
   } catch (err) {
@@ -55,7 +52,6 @@ router.get("/:id", (req, res) => {
   }
 });
 
-// Get doctor availability
 router.get("/:id/availability", (req, res) => {
   const slots = [
     { time: "09:00 AM", available: true },
@@ -74,11 +70,10 @@ router.get("/:id/availability", (req, res) => {
   res.json(slots);
 });
 
-// Get doctor appointments
-router.get("/:id/appointments", authMiddleware, (req, res) => {
+router.get("/:id/appointments", authMiddleware, async (req, res) => {
   try {
-    const appointments = db.getAppointments({ doctorId: req.params.id });
-    res.json(appointments);
+    const appointments = await Appointment.find({ doctorId: req.params.id });
+    res.json(appointments.map(a => ({ ...a.toObject(), id: a._id.toString() })));
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

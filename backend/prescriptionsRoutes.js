@@ -1,73 +1,71 @@
 const express = require("express");
 const router = express.Router();
 const authMiddleware = require("./authMiddleware");
-const { db } = require("./localDb");
+const Prescription = require("./models/Prescription");
+const User = require("./models/User");
 
-// Get all prescriptions for current user
-router.get("/", authMiddleware, (req, res) => {
+router.get("/", authMiddleware, async (req, res) => {
   try {
     const { id, role } = req.user;
-    let prescriptions;
-    if (role === "doctor") {
-      prescriptions = db.getPrescriptions({ doctorId: id });
-    } else if (role === "patient") {
-      prescriptions = db.getPrescriptions({ patientId: id });
-    } else {
-      prescriptions = db.getPrescriptions();
-    }
-    res.json(prescriptions);
+    let query = {};
+    if (role === "doctor") query.doctorId = id;
+    else if (role === "patient") query.patientId = id;
+
+    const prescriptions = await Prescription.find(query).sort({ createdAt: -1 });
+    res.json(prescriptions.map(p => ({ ...p.toObject(), id: p._id.toString() })));
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-// Create prescription (doctor only)
-router.post("/", authMiddleware, (req, res) => {
+router.post("/", authMiddleware, async (req, res) => {
   try {
     const { patientId, patientName, medicines, notes, status } = req.body;
-    const doctor = db.findUserById(req.user.id);
-    const newRx = db.createPrescription({
+    const doctor = await User.findById(req.user.id);
+    const newRx = await Prescription.create({
       patientId,
       patientName: patientName || "Patient",
       doctorId: req.user.id,
       doctorName: doctor ? doctor.name : "Doctor",
       medicines: medicines || [],
       notes: notes || "",
-      status: status || "Active",
-      prescribedDate: new Date().toISOString(),
+      status: status || "Active"
     });
-    res.status(201).json(newRx);
+
+    const obj = newRx.toObject();
+    obj.id = obj._id.toString();
+    res.status(201).json(obj);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-// Update prescription
-router.put("/:id", authMiddleware, (req, res) => {
+router.put("/:id", authMiddleware, async (req, res) => {
   try {
-    const updated = db.updatePrescription(req.params.id, req.body);
+    const updated = await Prescription.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updated) return res.status(404).json({ message: "Prescription not found" });
-    res.json(updated);
+
+    const obj = updated.toObject();
+    obj.id = obj._id.toString();
+    res.json(obj);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-// Get prescriptions by patient
-router.get("/patient/:patientId", authMiddleware, (req, res) => {
+router.get("/patient/:patientId", authMiddleware, async (req, res) => {
   try {
-    const prescriptions = db.getPrescriptions({ patientId: req.params.patientId });
-    res.json(prescriptions);
+    const prescriptions = await Prescription.find({ patientId: req.params.patientId }).sort({ createdAt: -1 });
+    res.json(prescriptions.map(p => ({ ...p.toObject(), id: p._id.toString() })));
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-// Get prescriptions by doctor
-router.get("/doctor/:doctorId", authMiddleware, (req, res) => {
+router.get("/doctor/:doctorId", authMiddleware, async (req, res) => {
   try {
-    const prescriptions = db.getPrescriptions({ doctorId: req.params.doctorId });
-    res.json(prescriptions);
+    const prescriptions = await Prescription.find({ doctorId: req.params.doctorId }).sort({ createdAt: -1 });
+    res.json(prescriptions.map(p => ({ ...p.toObject(), id: p._id.toString() })));
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

@@ -11,12 +11,7 @@ const BOOKED_SLOTS = ['9:30 AM', '11:00 AM', '3:00 PM'];
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-// Fallback doctors if API returns empty
-const FALLBACK_DOCTORS = [
-    { id: '1', firstName: 'Dr. Sarah', lastName: 'Mitchell', specialization: 'Cardiologist', rating: 4.9, available: true, color: '#3b82f6', hospital: 'Medicare General' },
-    { id: '2', firstName: 'Dr. James', lastName: 'Wilson', specialization: 'Neurologist', rating: 4.8, available: true, color: '#10b981', hospital: 'City Medical Center' },
-    { id: '3', firstName: 'Dr. Priya', lastName: 'Sharma', specialization: 'Pediatrician', rating: 4.9, available: true, color: '#8b5cf6', hospital: 'Medicare General' },
-];
+// No fallback doctors; display empty state if none are returned
 
 const COLORS = ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ef4444', '#0d9488'];
 
@@ -99,9 +94,9 @@ export default function AppointmentPage() {
                     color: COLORS[i % COLORS.length],
                     hospital: d.hospital || 'Medicare General',
                 }));
-                setDoctors(docs.length > 0 ? docs : FALLBACK_DOCTORS);
+                setDoctors(docs);
             })
-            .catch(() => setDoctors(FALLBACK_DOCTORS))
+            .catch(() => setDoctors([]))
             .finally(() => setLoadingDoctors(false));
     }, []);
 
@@ -210,28 +205,36 @@ export default function AppointmentPage() {
                                             ))}
                                         </div>
                                         <div className="doctors-select-grid">
-                                            {filteredDoctors.map(doc => (
-                                                <div
-                                                    key={doc.id}
-                                                    className={`doctor-select-card ${selectedDoctor?.id === doc.id ? 'selected' : ''} ${!doc.available ? 'unavailable' : ''}`}
-                                                    onClick={() => doc.available && setSelectedDoctor(doc)}
-                                                    style={selectedDoctor?.id === doc.id ? { borderColor: doc.color, background: `${doc.color}08` } : {}}
-                                                >
-                                                    <div className="dsc-avatar" style={{ background: `linear-gradient(135deg, ${doc.color}, ${doc.color}88)` }}>
-                                                        {(doc.name || doc.lastName || 'D')[0]}
-                                                    </div>
-                                                    <div className="dsc-info">
-                                                        <div className="dsc-name">{doc.name}</div>
-                                                        <div className="dsc-spec">{doc.specialty}</div>
-                                                        <div className="dsc-meta">
-                                                            <span>⭐ {doc.rating}</span>
-                                                            <span><MapPin size={10} /> {doc.hospital}</span>
-                                                        </div>
-                                                    </div>
-                                                    {!doc.available && <span className="badge badge-error" style={{ position: 'absolute', top: 12, right: 12 }}>Unavailable</span>}
-                                                    {selectedDoctor?.id === doc.id && <CheckCircle size={18} color={doc.color} style={{ position: 'absolute', top: 12, right: 12 }} />}
+                                            {filteredDoctors.length === 0 ? (
+                                                <div style={{ padding: '40px', textAlign: 'center', color: '#64748b', gridColumn: '1 / -1' }}>
+                                                    <Stethoscope size={48} color="#cbd5e1" style={{ margin: '0 auto 16px' }} />
+                                                    <h3 style={{ color: '#475569', marginBottom: 8 }}>No Doctors Available</h3>
+                                                    <p>There are currently no doctors registered in the system.</p>
                                                 </div>
-                                            ))}
+                                            ) : (
+                                                filteredDoctors.map(doc => (
+                                                    <div
+                                                        key={doc.id}
+                                                        className={`doctor-select-card ${selectedDoctor?.id === doc.id ? 'selected' : ''} ${!doc.available ? 'unavailable' : ''}`}
+                                                        onClick={() => doc.available && setSelectedDoctor(doc)}
+                                                        style={selectedDoctor?.id === doc.id ? { borderColor: doc.color, background: `${doc.color}08` } : {}}
+                                                    >
+                                                        <div className="dsc-avatar" style={{ background: `linear-gradient(135deg, ${doc.color}, ${doc.color}88)` }}>
+                                                            {(doc.name || doc.lastName || 'D')[0]}
+                                                        </div>
+                                                        <div className="dsc-info">
+                                                            <div className="dsc-name">{doc.name}</div>
+                                                            <div className="dsc-spec">{doc.specialty}</div>
+                                                            <div className="dsc-meta">
+                                                                <span>⭐ {doc.rating}</span>
+                                                                <span><MapPin size={10} /> {doc.hospital}</span>
+                                                            </div>
+                                                        </div>
+                                                        {!doc.available && <span className="badge badge-error" style={{ position: 'absolute', top: 12, right: 12 }}>Unavailable</span>}
+                                                        {selectedDoctor?.id === doc.id && <CheckCircle size={18} color={doc.color} style={{ position: 'absolute', top: 12, right: 12 }} />}
+                                                    </div>
+                                                ))
+                                            )}
                                         </div>
                                     </>
                                 )}

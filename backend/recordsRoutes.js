@@ -1,37 +1,37 @@
 const express = require("express");
 const router = express.Router();
 const authMiddleware = require("./authMiddleware");
-const { db } = require("./localDb");
+const Record = require("./models/Record");
 
-// Get all records for current user
-router.get("/", authMiddleware, (req, res) => {
+router.get("/", authMiddleware, async (req, res) => {
   try {
-    const records = db.getRecords({ userId: req.user.id, patientId: req.user.id });
-    res.json(records);
+    const records = await Record.find({ patientId: req.user.id }).sort({ createdAt: -1 });
+    res.json(records.map(r => ({ ...r.toObject(), id: r._id.toString() })));
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-// Create medical record
-router.post("/", authMiddleware, (req, res) => {
+router.post("/", authMiddleware, async (req, res) => {
   try {
-    const newRecord = db.createRecord({
+    const newRecord = await Record.create({
       ...req.body,
       patientId: req.body.patientId || req.user.id,
       createdBy: req.user.id,
     });
-    res.status(201).json(newRecord);
+
+    const obj = newRecord.toObject();
+    obj.id = obj._id.toString();
+    res.status(201).json(obj);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-// Get records by patient
-router.get("/patient/:patientId", authMiddleware, (req, res) => {
+router.get("/patient/:patientId", authMiddleware, async (req, res) => {
   try {
-    const records = db.getRecords({ patientId: req.params.patientId });
-    res.json(records);
+    const records = await Record.find({ patientId: req.params.patientId }).sort({ createdAt: -1 });
+    res.json(records.map(r => ({ ...r.toObject(), id: r._id.toString() })));
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

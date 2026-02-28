@@ -26,6 +26,9 @@ export const authAPI = {
 
     verifyToken: () =>
         api.get('/auth/verify'),
+
+    updateProfile: (data) =>
+        api.put('/auth/profile', data),
 };
 
 // ─── APPOINTMENTS ───────────────────────────────────────────────────────────

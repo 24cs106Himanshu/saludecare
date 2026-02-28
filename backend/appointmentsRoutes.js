@@ -1,36 +1,30 @@
 const express = require("express");
 const router = express.Router();
 const authMiddleware = require("./authMiddleware");
-const { db } = require("./localDb");
+const Appointment = require("./models/Appointment");
+const User = require("./models/User");
 
-// Get all appointments for current user
-// - Patients see their own appointments
-// - Doctors see appointments booked with them
-router.get("/", authMiddleware, (req, res) => {
+router.get("/", authMiddleware, async (req, res) => {
   try {
     const { id, role } = req.user;
     let appointments;
 
     if (role === "doctor") {
-      appointments = db.getAppointments({ doctorId: id });
+      appointments = await Appointment.find({ doctorId: id }).sort({ createdAt: -1 });
     } else if (role === "patient") {
-      appointments = db.getAppointments({ patientId: id });
+      appointments = await Appointment.find({ patientId: id }).sort({ createdAt: -1 });
     } else {
-      // Admin sees all
-      appointments = db.getAppointments();
+      appointments = await Appointment.find().sort({ createdAt: -1 });
     }
 
-    // Sort by date descending (most recent first)
-    appointments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-    res.json(appointments);
+    // Map `_id` to `id` for frontend
+    res.json(appointments.map(a => ({ ...a.toObject(), id: a._id.toString() })));
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-// Create appointment (patient books with a doctor)
-router.post("/", authMiddleware, (req, res) => {
+router.post("/", authMiddleware, async (req, res) => {
   try {
     const { doctorId, doctorName, specialty, hospital, date, time, reason } = req.body;
 
@@ -38,12 +32,10 @@ router.post("/", authMiddleware, (req, res) => {
       return res.status(400).json({ message: "Doctor, date, and time are required" });
     }
 
-    // Get patient info
-    const { db: dbModule } = require("./localDb");
-    const patient = db.findUserById(req.user.id);
+    const patient = await User.findById(req.user.id);
     const patientName = patient ? patient.name : "Patient";
 
-    const newAppointment = db.createAppointment({
+    const newAppointment = await Appointment.create({
       doctorId,
       doctorName: doctorName || "Doctor",
       specialty: specialty || "General",
@@ -56,88 +48,82 @@ router.post("/", authMiddleware, (req, res) => {
       status: "pending",
     });
 
-    res.status(201).json(newAppointment);
+    const appointmentObj = newAppointment.toObject();
+    appointmentObj.id = appointmentObj._id.toString();
+    res.status(201).json(appointmentObj);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-// Get appointment by ID
-router.get("/:id", authMiddleware, (req, res) => {
+router.get("/:id", authMiddleware, async (req, res) => {
   try {
-    const appointment = db.getAppointmentById(req.params.id);
-    if (!appointment) {
-      return res.status(404).json({ message: "Appointment not found" });
-    }
-    res.json(appointment);
+    const appointment = await Appointment.findById(req.params.id);
+    if (!appointment) return res.status(404).json({ message: "Appointment not found" });
+
+    const obj = appointment.toObject();
+    obj.id = obj._id.toString();
+    res.json(obj);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-// Update appointment (doctor can confirm/complete, patient can update reason)
-router.put("/:id", authMiddleware, (req, res) => {
+router.put("/:id", authMiddleware, async (req, res) => {
   try {
-    const appointment = db.getAppointmentById(req.params.id);
-    if (!appointment) {
-      return res.status(404).json({ message: "Appointment not found" });
-    }
-
-    const updated = db.updateAppointment(req.params.id, req.body);
-    res.json(updated);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// Delete / Cancel appointment
-router.delete("/:id", authMiddleware, (req, res) => {
-  try {
-    const appointment = db.getAppointmentById(req.params.id);
-    if (!appointment) {
-      return res.status(404).json({ message: "Appointment not found" });
-    }
-
-    // Mark as cancelled instead of deleting to preserve history
-    const updated = db.updateAppointment(req.params.id, { status: "cancelled" });
-    res.json({ message: "Appointment cancelled successfully", appointment: updated });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// Reschedule appointment
-router.put("/:id/reschedule", authMiddleware, (req, res) => {
-  try {
-    const appointment = db.getAppointmentById(req.params.id);
-    if (!appointment) {
-      return res.status(404).json({ message: "Appointment not found" });
-    }
-
-    const updated = db.updateAppointment(req.params.id, { ...req.body, status: "rescheduled" });
-    res.json(updated);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// Confirm appointment (doctor action)
-router.put("/:id/confirm", authMiddleware, (req, res) => {
-  try {
-    const updated = db.updateAppointment(req.params.id, { status: "confirmed" });
+    const updated = await Appointment.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updated) return res.status(404).json({ message: "Appointment not found" });
-    res.json(updated);
+    const obj = updated.toObject();
+    obj.id = obj._id.toString();
+    res.json(obj);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-// Complete appointment (doctor action)
-router.put("/:id/complete", authMiddleware, (req, res) => {
+router.delete("/:id", authMiddleware, async (req, res) => {
   try {
-    const updated = db.updateAppointment(req.params.id, { status: "completed" });
+    const updated = await Appointment.findByIdAndUpdate(req.params.id, { status: "cancelled" }, { new: true });
     if (!updated) return res.status(404).json({ message: "Appointment not found" });
-    res.json(updated);
+    const obj = updated.toObject();
+    obj.id = obj._id.toString();
+    res.json({ message: "Appointment cancelled successfully", appointment: obj });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.put("/:id/reschedule", authMiddleware, async (req, res) => {
+  try {
+    const updated = await Appointment.findByIdAndUpdate(req.params.id, { ...req.body, status: "rescheduled" }, { new: true });
+    if (!updated) return res.status(404).json({ message: "Appointment not found" });
+    const obj = updated.toObject();
+    obj.id = obj._id.toString();
+    res.json(obj);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.put("/:id/confirm", authMiddleware, async (req, res) => {
+  try {
+    const updated = await Appointment.findByIdAndUpdate(req.params.id, { status: "confirmed" }, { new: true });
+    if (!updated) return res.status(404).json({ message: "Appointment not found" });
+    const obj = updated.toObject();
+    obj.id = obj._id.toString();
+    res.json(obj);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.put("/:id/complete", authMiddleware, async (req, res) => {
+  try {
+    const updated = await Appointment.findByIdAndUpdate(req.params.id, { status: "completed" }, { new: true });
+    if (!updated) return res.status(404).json({ message: "Appointment not found" });
+    const obj = updated.toObject();
+    obj.id = obj._id.toString();
+    res.json(obj);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

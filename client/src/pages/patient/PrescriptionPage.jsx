@@ -5,18 +5,7 @@ import { prescriptionsAPI } from '../../services/api';
 import toast from 'react-hot-toast';
 import './PrescriptionPage.css';
 
-// Fallback sample data shown when no prescriptions exist yet
-const SAMPLE_PRESCRIPTIONS = [
-    {
-        id: 'sample-1', date: 'Sample', doctor: 'Dr. Sarah Mitchell', specialty: 'Cardiologist',
-        status: 'Active', color: '#3b82f6',
-        medicines: [
-            { name: 'Atorvastatin', dosage: '20mg', frequency: 'Once daily (night)', duration: '3 months', instructions: 'Take after dinner' },
-        ],
-        notes: 'This is sample data. Add a real prescription via the doctor\'s panel.',
-        isSample: true,
-    },
-];
+// No fallback prescriptions
 
 export default function PrescriptionPage() {
     const [search, setSearch] = useState('');
@@ -31,8 +20,7 @@ export default function PrescriptionPage() {
             .then(res => {
                 const data = res.data;
                 if (data.length === 0) {
-                    // Show sample data so the UI doesn't look empty
-                    setPrescriptions(SAMPLE_PRESCRIPTIONS);
+                    setPrescriptions([]);
                 } else {
                     // Normalize backend data to match UI expectations
                     const normalized = data.map(p => ({
@@ -52,8 +40,8 @@ export default function PrescriptionPage() {
                 }
             })
             .catch(() => {
-                setPrescriptions(SAMPLE_PRESCRIPTIONS);
-                toast.error('Could not load prescriptions from server. Showing sample data.');
+                setPrescriptions([]);
+                toast.error('Could not load prescriptions from server.');
             })
             .finally(() => setLoading(false));
     };

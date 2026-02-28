@@ -106,10 +106,10 @@ export default function Sidebar({ mobileOpen, onClose }) {
 
                 {/* Bottom Actions */}
                 <div className="sidebar-bottom">
-                    <button className="sidebar-nav-item" style={{ width: '100%', background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.5)' }}>
+                    <Link to={`/${user?.role}/settings`} className="sidebar-nav-item" style={{ width: '100%', cursor: 'pointer', color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>
                         <Settings size={18} />
                         <span>Settings</span>
-                    </button>
+                    </Link>
                     <button className="sidebar-logout" onClick={handleLogout}>
                         <LogOut size={18} />
                         <span>Sign Out</span>

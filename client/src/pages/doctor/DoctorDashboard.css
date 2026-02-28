@@ -10,6 +10,7 @@
     padding: 28px 32px;
     position: relative;
     overflow: hidden;
+    animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
 .doctor-welcome-bg {
@@ -59,11 +60,35 @@
     padding: 10px 12px;
     border-radius: 10px;
     border: 1px solid #f1f5f9;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
+    animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* Stagger schedule items */
+.schedule-list .schedule-item:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.schedule-list .schedule-item:nth-child(2) {
+    animation-delay: 0.17s;
+}
+
+.schedule-list .schedule-item:nth-child(3) {
+    animation-delay: 0.24s;
+}
+
+.schedule-list .schedule-item:nth-child(4) {
+    animation-delay: 0.31s;
+}
+
+.schedule-list .schedule-item:nth-child(5) {
+    animation-delay: 0.38s;
 }
 
 .schedule-item:hover {
     background: #f8fafc;
+    border-color: #e2e8f0;
+    transform: translateX(3px);
 }
 
 .schedule-item.in-progress {
@@ -130,11 +155,31 @@
     padding: 10px 12px;
     border-radius: 10px;
     border: 1px solid #f1f5f9;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
+    animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* Stagger recent patient items */
+.recent-patients-list .recent-patient-item:nth-child(1) {
+    animation-delay: 0.15s;
+}
+
+.recent-patients-list .recent-patient-item:nth-child(2) {
+    animation-delay: 0.22s;
+}
+
+.recent-patients-list .recent-patient-item:nth-child(3) {
+    animation-delay: 0.29s;
+}
+
+.recent-patients-list .recent-patient-item:nth-child(4) {
+    animation-delay: 0.36s;
 }
 
 .recent-patient-item:hover {
     background: #f8fafc;
+    border-color: #e2e8f0;
+    transform: translateX(3px);
 }
 
 .rp-avatar {
