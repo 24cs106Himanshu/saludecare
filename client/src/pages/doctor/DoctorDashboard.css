@@ -1,0 +1,294 @@
+.doctor-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.doctor-welcome {
+    background: linear-gradient(135deg, #064e3b 0%, #065f46 40%, #0d9488 100%);
+    border-radius: 20px;
+    padding: 28px 32px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.doctor-welcome-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 30px 30px;
+}
+
+.doctor-welcome-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.doctor-welcome-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 99px;
+    padding: 8px 16px;
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+}
+
+/* Schedule */
+.schedule-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.schedule-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #f1f5f9;
+    transition: all 0.2s ease;
+    animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* Stagger schedule items */
+.schedule-list .schedule-item:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.schedule-list .schedule-item:nth-child(2) {
+    animation-delay: 0.17s;
+}
+
+.schedule-list .schedule-item:nth-child(3) {
+    animation-delay: 0.24s;
+}
+
+.schedule-list .schedule-item:nth-child(4) {
+    animation-delay: 0.31s;
+}
+
+.schedule-list .schedule-item:nth-child(5) {
+    animation-delay: 0.38s;
+}
+
+.schedule-item:hover {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    transform: translateX(3px);
+}
+
+.schedule-item.in-progress {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+.schedule-item.completed {
+    opacity: 0.6;
+}
+
+.schedule-time {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.72rem;
+    color: #64748b;
+    font-weight: 600;
+    min-width: 65px;
+}
+
+.schedule-patient-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+}
+
+.schedule-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.schedule-patient {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.schedule-type {
+    font-size: 0.72rem;
+    color: #64748b;
+    margin-top: 1px;
+}
+
+/* Recent Patients */
+.recent-patients-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.recent-patient-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #f1f5f9;
+    transition: all 0.2s ease;
+    animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* Stagger recent patient items */
+.recent-patients-list .recent-patient-item:nth-child(1) {
+    animation-delay: 0.15s;
+}
+
+.recent-patients-list .recent-patient-item:nth-child(2) {
+    animation-delay: 0.22s;
+}
+
+.recent-patients-list .recent-patient-item:nth-child(3) {
+    animation-delay: 0.29s;
+}
+
+.recent-patients-list .recent-patient-item:nth-child(4) {
+    animation-delay: 0.36s;
+}
+
+.recent-patient-item:hover {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    transform: translateX(3px);
+}
+
+.rp-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+}
+
+.rp-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.rp-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.rp-condition {
+    font-size: 0.72rem;
+    color: #64748b;
+    margin-top: 1px;
+}
+
+/* Quick Stats */
+.doctor-quick-stats {
+    display: flex;
+    gap: 16px;
+    padding: 14px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.dqs-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.dqs-value {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.dqs-label {
+    font-size: 0.68rem;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+    .pd-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .pd-main-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .doctor-welcome {
+        padding: 20px 18px;
+    }
+
+    .doctor-welcome-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .pd-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .doctor-quick-stats {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .dqs-item {
+        min-width: calc(50% - 10px);
+    }
+}
+
+@media (max-width: 480px) {
+    .pd-stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .schedule-time {
+        min-width: 55px;
+        font-size: 0.68rem;
+    }
+
+    .schedule-patient {
+        font-size: 0.8rem;
+    }
+}
