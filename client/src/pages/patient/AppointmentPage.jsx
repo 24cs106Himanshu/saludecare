@@ -6,7 +6,6 @@ import { appointmentsAPI, doctorsAPI } from '../../services/api';
 import './AppointmentPage.css';
 
 const TIME_SLOTS = ['9:00 AM', '9:30 AM', '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '2:00 PM', '2:30 PM', '3:00 PM', '3:30 PM', '4:00 PM', '4:30 PM'];
-const BOOKED_SLOTS = ['9:30 AM', '11:00 AM', '3:00 PM'];
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -74,6 +73,7 @@ export default function AppointmentPage() {
     const [reason, setReason] = useState('');
     const [showSuccess, setShowSuccess] = useState(false);
     const [filterSpec, setFilterSpec] = useState('All');
+    const [blockedSlots, setBlockedSlots] = useState([]);
 
     // API state
     const [doctors, setDoctors] = useState([]);
@@ -109,6 +109,17 @@ export default function AppointmentPage() {
     };
 
     useEffect(() => { fetchAppointments(); }, []);
+
+    // Fetch doctor's blocked slots whenever a doctor is selected
+    useEffect(() => {
+        if (!selectedDoctor?.id) { setBlockedSlots([]); return; }
+        doctorsAPI.getAvailability(selectedDoctor.id)
+            .then(res => {
+                const blocked = res.data.filter(s => !s.available).map(s => s.time);
+                setBlockedSlots(blocked);
+            })
+            .catch(() => setBlockedSlots([]));
+    }, [selectedDoctor]);
 
     const specialties = ['All', ...new Set(doctors.map(d => d.specialty))];
     const filteredDoctors = filterSpec === 'All' ? doctors : doctors.filter(d => d.specialty === filterSpec);
@@ -260,7 +271,7 @@ export default function AppointmentPage() {
                                     {selectedDate && (
                                         <div className="time-slots-grid">
                                             {TIME_SLOTS.map(slot => {
-                                                const isBooked = BOOKED_SLOTS.includes(slot);
+                                                const isBooked = blockedSlots.includes(slot);
                                                 return (
                                                     <button
                                                         key={slot}

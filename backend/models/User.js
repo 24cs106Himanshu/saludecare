@@ -14,7 +14,8 @@ const userSchema = new mongoose.Schema({
     experience: { type: String },
     rating: { type: Number },
     hospital: { type: String },
-    consultationFee: { type: Number }
+    consultationFee: { type: Number },
+    blockedSlots: { type: [String], default: [] }
 }, { timestamps: true });
 
 // Avoid overlapping model creation if it already exists

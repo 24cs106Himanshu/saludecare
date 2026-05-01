@@ -124,6 +124,9 @@ export const doctorsAPI = {
 
     getAvailability: (id) =>
         api.get(`/doctors/${id}/availability`),
+
+    updateAvailability: (id, blockedSlots) =>
+        api.put(`/doctors/${id}/availability`, { blockedSlots }),
 };
 
 // ─── PATIENTS ───────────────────────────────────────────────────────────────

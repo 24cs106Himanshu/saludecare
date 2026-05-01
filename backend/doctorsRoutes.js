@@ -52,22 +52,37 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.get("/:id/availability", (req, res) => {
-  const slots = [
-    { time: "09:00 AM", available: true },
-    { time: "09:30 AM", available: true },
-    { time: "10:00 AM", available: true },
-    { time: "10:30 AM", available: true },
-    { time: "11:00 AM", available: true },
-    { time: "11:30 AM", available: false },
-    { time: "02:00 PM", available: true },
-    { time: "02:30 PM", available: true },
-    { time: "03:00 PM", available: true },
-    { time: "03:30 PM", available: true },
-    { time: "04:00 PM", available: true },
-    { time: "04:30 PM", available: false },
+router.get("/:id/availability", async (req, res) => {
+  const ALL_SLOTS = [
+    "9:00 AM","9:30 AM","10:00 AM","10:30 AM","11:00 AM","11:30 AM",
+    "2:00 PM","2:30 PM","3:00 PM","3:30 PM","4:00 PM","4:30 PM"
   ];
-  res.json(slots);
+  try {
+    const doctor = await User.findById(req.params.id);
+    const blockedSlots = doctor?.blockedSlots || [];
+    const slots = ALL_SLOTS.map(time => ({
+      time,
+      available: !blockedSlots.includes(time)
+    }));
+    res.json(slots);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.put("/:id/availability", authMiddleware, async (req, res) => {
+  try {
+    const { blockedSlots } = req.body;
+    const doctor = await User.findByIdAndUpdate(
+      req.params.id,
+      { blockedSlots: blockedSlots || [] },
+      { new: true }
+    );
+    if (!doctor) return res.status(404).json({ message: "Doctor not found" });
+    res.json({ message: "Availability updated successfully", blockedSlots: doctor.blockedSlots });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
 
 router.get("/:id/appointments", authMiddleware, async (req, res) => {
