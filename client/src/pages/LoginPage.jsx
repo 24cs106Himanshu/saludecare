@@ -316,25 +316,7 @@ export default function LoginPage() {
                         <Link to="/register">Create one free</Link>
                     </p>
 
-                    <div className="auth-demo-hint" style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 12, padding: '12px 16px', marginTop: 16 }}>
-                        <div style={{ fontWeight: 700, fontSize: '0.8rem', color: '#166534', marginBottom: 8 }}>🧪 Demo Credentials</div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                            <button
-                                type="button"
-                                onClick={() => { setEmail('patient@medicare.com'); setPassword('patient123'); setRole('patient'); }}
-                                style={{ background: '#eff6ff', border: '1px solid #93c5fd', borderRadius: 8, padding: '6px 10px', fontSize: '0.75rem', cursor: 'pointer', textAlign: 'left', color: '#1d4ed8' }}
-                            >
-                                👤 <strong>Patient:</strong> patient@medicare.com / patient123
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => { setEmail('doctor@medicare.com'); setPassword('doctor123'); setRole('doctor'); }}
-                                style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 8, padding: '6px 10px', fontSize: '0.75rem', cursor: 'pointer', textAlign: 'left', color: '#166534' }}
-                            >
-                                👨‍⚕️ <strong>Doctor:</strong> doctor@medicare.com / doctor123
-                            </button>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
