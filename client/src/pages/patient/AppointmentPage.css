@@ -1,0 +1,540 @@
+.appointment-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Tabs */
+.appt-tabs {
+    display: flex;
+    gap: 8px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 6px;
+    width: fit-content;
+}
+
+.appt-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    background: none;
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.appt-tab:hover {
+    color: #1e293b;
+    background: #f8fafc;
+}
+
+.appt-tab.active {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+/* Book Flow */
+.book-flow {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Steps */
+.book-steps {
+    display: flex;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.book-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #94a3b8;
+}
+
+.book-step.active {
+    color: #2563eb;
+}
+
+.book-step.done {
+    color: #10b981;
+}
+
+.book-step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: all 0.3s;
+}
+
+.book-step.active .book-step-num {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.book-step.done .book-step-num {
+    background: #d1fae5;
+    color: #10b981;
+}
+
+.book-step-line {
+    flex: 1;
+    height: 2px;
+    background: #e2e8f0;
+    margin: 0 8px;
+    min-width: 40px;
+}
+
+/* Specialty Filter */
+.spec-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.spec-btn {
+    padding: 7px 16px;
+    border-radius: 99px;
+    border: 1.5px solid #e2e8f0;
+    background: white;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.spec-btn:hover {
+    border-color: #93c5fd;
+    color: #2563eb;
+}
+
+.spec-btn.active {
+    background: #eff6ff;
+    border-color: #93c5fd;
+    color: #2563eb;
+}
+
+/* Doctor Select Grid */
+.doctors-select-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
+.doctor-select-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+}
+
+.doctor-select-card:hover:not(.unavailable) {
+    border-color: #93c5fd;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    transform: translateY(-1px);
+}
+
+.doctor-select-card.selected {
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.12);
+}
+
+.doctor-select-card.unavailable {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.dsc-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 800;
+    color: white;
+    flex-shrink: 0;
+}
+
+.dsc-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.dsc-spec {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+.dsc-meta {
+    display: flex;
+    gap: 10px;
+    font-size: 0.7rem;
+    color: #94a3b8;
+    margin-top: 4px;
+    align-items: center;
+}
+
+/* Step 2 */
+.step2-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 32px;
+    align-items: start;
+}
+
+.step-subtitle {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 14px;
+}
+
+/* Mini Calendar */
+.mini-calendar {
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 16px;
+    width: 280px;
+    border: 1px solid #e2e8f0;
+}
+
+.cal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.cal-month-label {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.cal-nav-btn {
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.cal-nav-btn:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+.cal-days-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 6px;
+}
+
+.cal-day-name {
+    text-align: center;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #94a3b8;
+    padding: 4px 0;
+    text-transform: uppercase;
+}
+
+.cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+
+.cal-day {
+    aspect-ratio: 1;
+    border-radius: 8px;
+    border: none;
+    background: none;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+}
+
+.cal-day:hover:not(:disabled) {
+    background: #e2e8f0;
+}
+
+.cal-day.today {
+    color: #2563eb;
+    font-weight: 800;
+}
+
+.cal-day.selected {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
+
+.cal-day.past {
+    color: #cbd5e1;
+    cursor: not-allowed;
+}
+
+/* Time Slots */
+.time-slots-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.time-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 10px 8px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    background: white;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.time-slot:hover:not(:disabled) {
+    border-color: #93c5fd;
+    color: #2563eb;
+    background: #eff6ff;
+}
+
+.time-slot.selected {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.time-slot.booked {
+    background: #f8fafc;
+    color: #cbd5e1;
+    cursor: not-allowed;
+    text-decoration: line-through;
+}
+
+/* Confirm */
+.confirm-card {
+    max-width: 560px;
+}
+
+.confirm-details {
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border: 1px solid #e2e8f0;
+}
+
+.confirm-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.confirm-label {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+}
+
+.confirm-value {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+/* Success */
+.success-card {
+    text-align: center;
+    padding: 60px 40px;
+}
+
+.success-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
+    animation: bounceIn 0.6s ease;
+}
+
+.success-card h3 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 8px;
+}
+
+.success-card p {
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+    .doctors-select-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .step2-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mini-calendar {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .book-flow {
+        padding: 20px 16px;
+    }
+
+    .appt-tabs {
+        width: 100%;
+    }
+
+    .appt-tab {
+        flex: 1;
+        justify-content: center;
+        padding: 10px 12px;
+        font-size: 0.8rem;
+    }
+
+    .book-steps {
+        gap: 4px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+    }
+
+    .book-step {
+        font-size: 0.78rem;
+    }
+
+    .spec-filter {
+        gap: 6px;
+    }
+
+    .spec-btn {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+    }
+
+    .doctors-select-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .dsc-name {
+        font-size: 0.8rem;
+    }
+
+    .time-slots-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+    }
+
+    .time-slot {
+        padding: 8px 4px;
+        font-size: 0.75rem;
+    }
+
+    .confirm-card {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .doctors-select-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .book-steps span {
+        display: none;
+    }
+
+    .book-step-num {
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+    }
+
+    .book-step-line {
+        min-width: 20px;
+    }
+
+    .time-slots-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .appt-tabs {
+        flex-wrap: wrap;
+    }
+
+    th,
+    td {
+        padding: 10px 8px;
+        font-size: 0.8rem;
+    }
+}
